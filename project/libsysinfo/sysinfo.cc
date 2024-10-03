@@ -1,6 +1,7 @@
+#include <string.h>
+
 #include "cpuInfo.h"
 #include "sysInfo.h"
-#include <string.h>
 
 // Example JNI function that returns an int
 JNIEXPORT jint JNICALL Java_sysInfo_intExample
@@ -24,7 +25,7 @@ JNIEXPORT jstring JNICALL Java_sysInfo_stringExample
 }
 
 JNIEXPORT jint JNICALL Java_cpuInfo_coreCount
-  (JNIEnv *env, jobject obj, jint num) {
+  (JNIEnv *env, jobject obj) {
    //  TODO get actual number of cores from /proc/cpuinfo
    return 8;
 }
@@ -39,13 +40,13 @@ JNIEXPORT jstring JNICALL Java_cpuInfo_getModel
 }
 
 JNIEXPORT jint JNICALL Java_cpuInfo_getBusy
-  (JNIEnv *env, jint core) {
+  (JNIEnv *env, jobject obj, jint core) {
    //  TODO return the busy percent for a specified core
    return 25;
 }
 
 JNIEXPORT jint JNICALL Java_cpuInfo_getIdle
-  (JNIEnv *env, jint core) {
+  (JNIEnv *env, jobject obj, jint core) {
    //  TODO return the idle percent for a specified core
    return 75;
 }

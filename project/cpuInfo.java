@@ -1,4 +1,4 @@
-package cs4421;
+// package cs4421;
 
 public class cpuInfo 
 {

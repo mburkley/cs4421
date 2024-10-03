@@ -1,2 +1,2 @@
 #!/bin/bash
-java -Djava.library.path=libsysinfo sysInfo 
+java -Djava.library.path=libsysinfo template 

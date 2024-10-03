@@ -1,10 +1,7 @@
-package cs4421;
+// package cs4421;
 
 public class template 
 {
-     public native int intExample(int n);
-     public native String stringExample(String s);
-
      public static void main(String[] args)
      {
           System.loadLibrary("sysinfo");
