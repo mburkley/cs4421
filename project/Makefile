@@ -3,12 +3,12 @@
 MODULES=sysInfo cpuInfo
 HEADERS=$(MODULES:=.h)
 
-MYPROJECT=template.java
+MYPROJECT=template
 
 all: $(HEADERS) template.class libsysinfo/libsysinfo.so
 
 $(MYPROJECT).class: $(MYPROJECT).java libsysinfo/libsysinfo.so
-	javac $@
+	javac $<
 
 $(HEADERS): %.h: %.java
 	javac -h . $<
