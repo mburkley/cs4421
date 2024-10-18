@@ -1,5 +1,3 @@
-// package cs4421;
-
 public class template 
 {
      public static void main(String[] args)
@@ -12,7 +10,15 @@ public class template
           System.out.println("stringExample: " + str);
 
           cpuInfo cpu = new cpuInfo();
+          cpu.read();
+
           System.out.println("CPU " + cpu.getModel() + " has "+
-              cpu.coreCount() + " cores");
+              cpu.socketCount() + " sockets each with "+
+              cpu.coresPerSocket() + " cores");
+          System.out.println("l1d="+cpu.l1dCacheSize()+
+              "l1i="+cpu.l1iCacheSize()+
+              "l2="+cpu.l2CacheSize()+
+              "l3="+cpu.l3CacheSize());
+
      }
 }
