@@ -1,14 +1,24 @@
-all: template.class
+.PHONY: libsysinfo/libsysinfo.so
 
-template.class: template.java libsysinfo/libsysinfo.so
-	javac template.java 
+MODULES=sysInfo cpuInfo
+HEADERS=$(MODULES:=.h)
 
-sysInfo.h: sysInfo.java
-	javac -h . sysInfo.java 
+MYPROJECT=template
 
-cpuInfo.h: cpuInfo.java
-	javac -h . cpuInfo.java 
+all: $(HEADERS) template.class libsysinfo/libsysinfo.so
 
-libsysinfo/libsysinfo.so: libsysinfo/sysinfo.cc sysInfo.h cpuInfo.h
+$(MYPROJECT).class: $(MYPROJECT).java libsysinfo/libsysinfo.so
+	javac $<
+
+$(HEADERS): %.h: %.java
+	javac -h . $<
+
+# sysInfo.h: sysInfo.java
+#	javac -h . sysInfo.java 
+
+# cpuInfo.h: cpuInfo.java
+# 	javac -h . cpuInfo.java 
+
+libsysinfo/libsysinfo.so:
 	$(MAKE) -C libsysinfo
 
