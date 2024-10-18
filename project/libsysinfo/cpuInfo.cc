@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <array>
+#include <unistd.h>
 
 #include "cpuInfo.h"
 
@@ -19,7 +20,7 @@ struct cpuStat {
 class cpuInfo
 {
 public:
-    void read();
+    void read(int seconds = 0);
     int getCoresPerSocket() { return _coresPerSocket; }
     int getSocketCount() { return _socketCount; }
     int getl1dCacheSize() { return _l1dCacheSize; }
@@ -98,8 +99,11 @@ void cpuInfo::_parseStat (char buffer[])
     _havePrevStat[core] = true;
 }
 
-void cpuInfo::read()
+void cpuInfo::read(int seconds)
 {
+    if (seconds)
+        sleep (seconds);
+
     std::array<char, 1024> buffer;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("lscpu -B", "r"), pclose);
     if (!pipe) {

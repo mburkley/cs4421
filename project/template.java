@@ -6,7 +6,7 @@ public class template
         sysInfo info = new sysInfo();
 
         cpuInfo cpu = new cpuInfo();
-        cpu.read();
+        cpu.read(0);
 
         System.out.println("CPU " + cpu.getModel() + " has "+
         cpu.socketCount() + " sockets each with "+
@@ -19,15 +19,7 @@ public class template
 
         while(true)
         {
-            try {
-                Thread.sleep (1000);
-            }
-            catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
-            }
-
-            cpu.read();
+            cpu.read(1);
             System.out.println("core 3 idle="+cpu.getIdleTime(3)+"%");
         }
     }

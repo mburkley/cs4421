@@ -1,7 +1,7 @@
 public class cpuInfo 
 {
     // Refresh the current values and counters - call this before other methods
-    public native void read ();
+    public native void read (int seconds);
 
     // Return the number of cores per CPU socket
     public native int coresPerSocket ();
