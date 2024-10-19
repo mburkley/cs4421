@@ -1,4 +1,8 @@
-// package cs4421;
+/*
+ *  Sample system information class for JNI
+ *
+ *  Copyright (c) 2024 Mark Burkley (mark.burkley@ul.ie)
+ */
 
 public class sysInfo 
 {

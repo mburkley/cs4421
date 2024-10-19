@@ -1,6 +1,6 @@
 .PHONY: libsysinfo/libsysinfo.so
 
-MODULES=sysInfo cpuInfo
+MODULES=sysInfo cpuInfo pciInfo usbInfo
 HEADERS=$(MODULES:=.h)
 
 MYPROJECT=template
@@ -12,12 +12,6 @@ $(MYPROJECT).class: $(MYPROJECT).java libsysinfo/libsysinfo.so
 
 $(HEADERS): %.h: %.java
 	javac -h . $<
-
-# sysInfo.h: sysInfo.java
-#	javac -h . sysInfo.java 
-
-# cpuInfo.h: cpuInfo.java
-# 	javac -h . cpuInfo.java 
 
 libsysinfo/libsysinfo.so:
 	$(MAKE) -C libsysinfo

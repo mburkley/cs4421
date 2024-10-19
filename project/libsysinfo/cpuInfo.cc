@@ -1,3 +1,10 @@
+/*
+ *  CPU information class implementation.  Reads CPU details by executing lscpu
+ *  and also reads usage stats.
+ *
+ *  Copyright (c) 2024 Mark Burkley (mark.burkley@ul.ie)
+ */
+
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -5,21 +12,23 @@
 #include <sstream>
 #include <string>
 #include <array>
+#include <unistd.h>
 
 #include "cpuInfo.h"
 
 using namespace std;
 
-struct cpuStat {
+struct CPUStat {
     int user;
     int system;
     int idle;
 };
 
-class cpuInfo
+class CPUInfo
 {
 public:
-    void read();
+    void read(int seconds = 0);
+    const char *getModel () { return _model.c_str(); }
     int getCoresPerSocket() { return _coresPerSocket; }
     int getSocketCount() { return _socketCount; }
     int getl1dCacheSize() { return _l1dCacheSize; }
@@ -46,17 +55,19 @@ private:
     void _parseInfo (string&, string &);
     void _parseStat (char buffer[]);
     void _parseStat (string&);
-    cpuStat _prevStat[_maxCores];
+    CPUStat _prevStat[_maxCores];
     bool _havePrevStat[_maxCores];
-    cpuStat _currStat[_maxCores];
+    CPUStat _currStat[_maxCores];
 };
 
-cpuInfo cpu;
+CPUInfo cpu;
 
-void cpuInfo::_parseInfo (string& key, string &value)
+void CPUInfo::_parseInfo (string& key, string &value)
 {
     if (key == "Architecture")
         _architecture = value;
+    else if (key == "Model name")
+        _model = value;
     else if (key == "Byte Order")
         _littleEndian == (key == "Little Endian");
     else if (key == "Thread(s) per core")
@@ -75,7 +86,7 @@ void cpuInfo::_parseInfo (string& key, string &value)
         _l3CacheSize = stoi (value);
 }
 
-void cpuInfo::_parseStat (char buffer[])
+void CPUInfo::_parseStat (char buffer[])
 {
     if (strncmp (buffer, "cpu", 3))
         return;
@@ -83,7 +94,7 @@ void cpuInfo::_parseStat (char buffer[])
     if (core<0||core>=_maxCores)
         return;
 
-    cpuStat stat;
+    CPUStat stat;
     string line = &buffer[5];
     istringstream stream(line);
     int nice;
@@ -98,13 +109,18 @@ void cpuInfo::_parseStat (char buffer[])
     _havePrevStat[core] = true;
 }
 
-void cpuInfo::read()
+void CPUInfo::read(int seconds)
 {
+    if (seconds)
+        sleep (seconds);
+
     std::array<char, 1024> buffer;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("lscpu -B", "r"), pclose);
+
     if (!pipe) {
         throw std::runtime_error("Failed to execute lscpu!");
     }
+
     while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe.get()) != nullptr) {
         string line = buffer.data();
         int delim = line.find(':');
@@ -115,8 +131,10 @@ void cpuInfo::read()
         while (buffer[delim] == ' ')
             delim++;
         string value = line.substr (delim, string::npos);
+        // cout<<"K="<<key<<",V="<<value<<endl;
         _parseInfo (key, value);
     }
+
     std::unique_ptr<FILE, decltype(&fclose)> stat(fopen("/proc/stat", "r"), fclose);
 
     if (!stat) {
@@ -127,8 +145,12 @@ void cpuInfo::read()
         _parseStat (buffer.data());
 }
 
-JNIEXPORT void JNICALL Java_cpuInfo_read (JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_cpuInfo_read__ (JNIEnv *env, jobject obj) {
     cpu.read();
+}
+
+JNIEXPORT void JNICALL Java_cpuInfo_read__I (JNIEnv *env, jobject obj, jint seconds) {
+    cpu.read(seconds);
 }
 
 JNIEXPORT jint JNICALL Java_cpuInfo_coresPerSocket (JNIEnv *env, jobject obj) {
@@ -157,9 +179,7 @@ JNIEXPORT jint JNICALL Java_cpuInfo_l3CacheSize (JNIEnv *env, jobject obj) {
 
 JNIEXPORT jstring JNICALL Java_cpuInfo_getModel (JNIEnv *env, jobject obj)
 {
-    const char *model = "Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz";
-
-    jstring result = env->NewStringUTF(model);
+    jstring result = env->NewStringUTF(cpu.getModel());
     return result;
 }
 

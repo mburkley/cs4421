@@ -1,3 +1,9 @@
+/*
+ *  Example JNI class
+ *
+ *  Copyright (c) 2024 Mark Burkley (mark.burkley@ul.ie)
+ */
+
 #include <string.h>
 
 #include "cpuInfo.h"
