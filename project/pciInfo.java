@@ -1,7 +1,7 @@
 public class pciInfo 
 {
     // Refresh the current values and counters - call this before other methods
-    public native void read (int seconds);
+    public native void read ();
 
     // Return the number of PCI buses
     public native int busCount ();
@@ -12,10 +12,13 @@ public class pciInfo
     // Return the number of functions in a PCI device
     public native int functionCount (int bus, int device);
 
+    // Return the number of functions in a PCI device
+    public native int functionPresent (int bus, int device, int function);
+
     // Return the vendor ID of a PCI device
-    public native int vendorID (int bus, int device);
+    public native int vendorID (int bus, int device, int function);
 
     // Return the product ID of a PCI device
-    public native int productID (int bus, int device);
+    public native int productID (int bus, int device, int function);
 }
 

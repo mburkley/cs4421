@@ -1,6 +1,6 @@
 MODULES=sysInfo cpuInfo pciInfo
 SOURCES=$(MODULES:=.cc)
-HEADERS=../$(MODULES:=.h)
+HEADERS=$(MODULES:%=../%.h)
 
 libsysinfo.so: $(SOURCES) $(HEADERS)
 	gcc -fPIC -I .. -I /usr/lib/jvm/java-11-openjdk-amd64/include \

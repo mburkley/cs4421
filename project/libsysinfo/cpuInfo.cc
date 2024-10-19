@@ -11,13 +11,13 @@
 
 using namespace std;
 
-struct cpuStat {
+struct CPUStat {
     int user;
     int system;
     int idle;
 };
 
-class cpuInfo
+class CPUInfo
 {
 public:
     void read(int seconds = 0);
@@ -47,14 +47,14 @@ private:
     void _parseInfo (string&, string &);
     void _parseStat (char buffer[]);
     void _parseStat (string&);
-    cpuStat _prevStat[_maxCores];
+    CPUStat _prevStat[_maxCores];
     bool _havePrevStat[_maxCores];
-    cpuStat _currStat[_maxCores];
+    CPUStat _currStat[_maxCores];
 };
 
-cpuInfo cpu;
+CPUInfo cpu;
 
-void cpuInfo::_parseInfo (string& key, string &value)
+void CPUInfo::_parseInfo (string& key, string &value)
 {
     if (key == "Architecture")
         _architecture = value;
@@ -76,7 +76,7 @@ void cpuInfo::_parseInfo (string& key, string &value)
         _l3CacheSize = stoi (value);
 }
 
-void cpuInfo::_parseStat (char buffer[])
+void CPUInfo::_parseStat (char buffer[])
 {
     if (strncmp (buffer, "cpu", 3))
         return;
@@ -84,7 +84,7 @@ void cpuInfo::_parseStat (char buffer[])
     if (core<0||core>=_maxCores)
         return;
 
-    cpuStat stat;
+    CPUStat stat;
     string line = &buffer[5];
     istringstream stream(line);
     int nice;
@@ -99,7 +99,7 @@ void cpuInfo::_parseStat (char buffer[])
     _havePrevStat[core] = true;
 }
 
-void cpuInfo::read(int seconds)
+void CPUInfo::read(int seconds)
 {
     if (seconds)
         sleep (seconds);
@@ -131,35 +131,35 @@ void cpuInfo::read(int seconds)
         _parseStat (buffer.data());
 }
 
-JNIEXPORT void JNICALL Java_cpuInfo_read (JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_CPUInfo_read (JNIEnv *env, jobject obj) {
     cpu.read();
 }
 
-JNIEXPORT jint JNICALL Java_cpuInfo_coresPerSocket (JNIEnv *env, jobject obj) {
+JNIEXPORT jint JNICALL Java_CPUInfo_coresPerSocket (JNIEnv *env, jobject obj) {
    return cpu.getCoresPerSocket();
 }
 
-JNIEXPORT jint JNICALL Java_cpuInfo_socketCount (JNIEnv *env, jobject obj) {
+JNIEXPORT jint JNICALL Java_CPUInfo_socketCount (JNIEnv *env, jobject obj) {
    return cpu.getSocketCount();
 }
 
-JNIEXPORT jint JNICALL Java_cpuInfo_l1dCacheSize (JNIEnv *env, jobject obj) {
+JNIEXPORT jint JNICALL Java_CPUInfo_l1dCacheSize (JNIEnv *env, jobject obj) {
    return cpu.getl1dCacheSize();
 }
 
-JNIEXPORT jint JNICALL Java_cpuInfo_l1iCacheSize (JNIEnv *env, jobject obj) {
+JNIEXPORT jint JNICALL Java_CPUInfo_l1iCacheSize (JNIEnv *env, jobject obj) {
    return cpu.getl1iCacheSize();
 }
 
-JNIEXPORT jint JNICALL Java_cpuInfo_l2CacheSize (JNIEnv *env, jobject obj) {
+JNIEXPORT jint JNICALL Java_CPUInfo_l2CacheSize (JNIEnv *env, jobject obj) {
    return cpu.getl2CacheSize();
 }
 
-JNIEXPORT jint JNICALL Java_cpuInfo_l3CacheSize (JNIEnv *env, jobject obj) {
+JNIEXPORT jint JNICALL Java_CPUInfo_l3CacheSize (JNIEnv *env, jobject obj) {
    return cpu.getl3CacheSize();
 }
 
-JNIEXPORT jstring JNICALL Java_cpuInfo_getModel (JNIEnv *env, jobject obj)
+JNIEXPORT jstring JNICALL Java_CPUInfo_getModel (JNIEnv *env, jobject obj)
 {
     const char *model = "Intel(R) Core(TM) i5-9400F CPU @ 2.90GHz";
 
@@ -167,15 +167,15 @@ JNIEXPORT jstring JNICALL Java_cpuInfo_getModel (JNIEnv *env, jobject obj)
     return result;
 }
 
-JNIEXPORT jint JNICALL Java_cpuInfo_getUserTime (JNIEnv *env, jobject obj, jint core) {
+JNIEXPORT jint JNICALL Java_CPUInfo_getUserTime (JNIEnv *env, jobject obj, jint core) {
    return cpu.getStatUser (core);
 }
 
-JNIEXPORT jint JNICALL Java_cpuInfo_getIdleTime (JNIEnv *env, jobject obj, jint core) {
+JNIEXPORT jint JNICALL Java_CPUInfo_getIdleTime (JNIEnv *env, jobject obj, jint core) {
    return cpu.getStatIdle (core);
 }
 
-JNIEXPORT jint JNICALL Java_cpuInfo_getSystemTime (JNIEnv *env, jobject obj, jint core) {
+JNIEXPORT jint JNICALL Java_CPUInfo_getSystemTime (JNIEnv *env, jobject obj, jint core) {
    return cpu.getStatSystem (core);
 }
 
