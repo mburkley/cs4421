@@ -1,6 +1,6 @@
 .PHONY: libsysinfo/libsysinfo.so
 
-MODULES=sysInfo cpuInfo pciInfo
+MODULES=sysInfo cpuInfo pciInfo usbInfo
 HEADERS=$(MODULES:=.h)
 
 MYPROJECT=template

@@ -1,6 +1,6 @@
 public class template 
 {
-    public static void main(String[] args)
+    public static void pcimain(String[] args)
     {
         System.loadLibrary("sysinfo");
         sysInfo info = new sysInfo();
@@ -24,6 +24,25 @@ public class template
                         }
                     }
                 }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        System.loadLibrary("sysinfo");
+        sysInfo info = new sysInfo();
+
+        usbInfo usb = new usbInfo();
+        usb.read();
+        System.out.println("This machine has "+
+            usb.busCount()+" USB buses ");
+        for (int i = 1; i <= usb.busCount(); i++) {
+            System.out.println("Bus "+i+" has "+
+                usb.deviceCount(i)+" devices");
+            for (int j = 1; j <= usb.deviceCount(i); j++) {
+                System.out.println("Bus "+i+" device "+j+
+                    " has vendor "+String.format("0x%04X", usb.vendorID(i,j))+
+                    " and product "+String.format("0x%04X", usb.productID(i,j)));
             }
         }
     }

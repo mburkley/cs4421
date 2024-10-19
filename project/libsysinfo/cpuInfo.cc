@@ -106,9 +106,11 @@ void CPUInfo::read(int seconds)
 
     std::array<char, 1024> buffer;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("lscpu -B", "r"), pclose);
+
     if (!pipe) {
         throw std::runtime_error("Failed to execute lscpu!");
     }
+
     while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe.get()) != nullptr) {
         string line = buffer.data();
         int delim = line.find(':');
@@ -121,6 +123,7 @@ void CPUInfo::read(int seconds)
         string value = line.substr (delim, string::npos);
         _parseInfo (key, value);
     }
+
     std::unique_ptr<FILE, decltype(&fclose)> stat(fopen("/proc/stat", "r"), fclose);
 
     if (!stat) {
