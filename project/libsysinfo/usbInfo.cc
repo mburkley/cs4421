@@ -1,3 +1,11 @@
+/*
+ *  USB information class.  Executes lsusb and parses output into arrays of buses and
+ *  devices.  Parsing is crude and just expects particular fields to be at particular
+ *  locations in the output.
+ *
+ *  Copyright (c) 2024 Mark Burkley (mark.burkley@ul.ie)
+ */
+
 #include <cstdio>
 #include <cstring>
 #include <iostream>
@@ -46,61 +54,26 @@ USBInfo usb;
 void USBInfo::_parseDevice (char buffer[])
 {
     string line = buffer;
-    // istringstream stream(line);
     
     string part = "0x"+line.substr(4,3);
-    // cout<<"subs 4="+line.substr(4,3)<<endl;
     int bus = stoi (part,0,16);
 
     part = "0x"+line.substr(15,3);
-    // cout<<"subs 15="+line.substr(15,3)<<endl;
     int device = stoi (part,0,16);
 
     part = "0x"+line.substr(23,4);
-    // cout<<"subs 23="+line.substr(23,4)<<endl;
     _bus[bus].device[device].vendor = stoi (part,0,16);
 
     part = "0x"+line.substr(28,4);
-    // cout<<"subs 28="+line.substr(28,4)<<endl;
     _bus[bus].device[device].product = stoi (part,0,16);
 
-    cout<<"bus="<<bus<<", dev="<<device<<endl;
+    // cout<<"bus="<<bus<<", dev="<<device<<endl;
     if (bus > _busCount)
         _busCount = bus;
 
     if (device > _bus[bus].deviceCount)
         _bus[bus].deviceCount = device;
-    cout<<"busus="<<_busCount<<", devs="<<_bus[bus].deviceCount<<endl;
-
-
-    // stream >> "Bus " << bus << " Device "<<device<<": ID :"<<hex<<product<<":"<<vendor;
-    
-    #if 0
-    int bus = location >> 8;
-    assert (bus < maxBus);
-    int device = (location & 0xf8) >> 3;
-    int function = location & 0x7;
-    cout<<"b="<<bus<<",d="<<device<<",f="<<function<<endl;
-
-    // Does this bus already have devices?  If not, increment the bus count
-    if (_bus[bus].deviceCount == 0)
-        _busCount++;
-
-    // Does this device already have any functions?  If not increment the device count
-    if (_bus[bus].device[device].functionCount == 0)
-        _bus[bus].deviceCount++;
-
-    // Increment the function count for the device
-    _bus[bus].device[device].functionCount++;
-
-    // if (device >= _bus[bus].deviceCount)
-    //     _bus[bus].deviceCount = device + 1;
-    _bus[bus].device[device].function[function].present = true;
-    // _bus[bus].deviceCount++;
-    // _bus[bus].device[device].functionCount++;
-    _bus[bus].device[device].function[function].vendor = ident >> 16;
-    _bus[bus].device[device].function[function].product = ident & 0xffff;
-    #endif
+    // cout<<"busus="<<_busCount<<", devs="<<_bus[bus].deviceCount<<endl;
 }
 
 void USBInfo::read()
