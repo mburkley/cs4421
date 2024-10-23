@@ -1,2 +1,2 @@
 #!/bin/bash
-java -Djava.library.path=libsysinfo template 
+java -Djava.library.path=libsysinfo GUITest

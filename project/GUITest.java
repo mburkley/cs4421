@@ -5,38 +5,37 @@ import javax.swing.*;
 
 public class GUITest extends JFrame implements ActionListener {
 
-
-    // Declare JButton at class level
+    // Declare JButton and JTextArea at class level
     JButton cpuButton;
     JTextArea cpuText;
 
     // Constructor for GUITest
     GUITest() {
         // Initialize the JButton
-        cpuButton = new JButton("CPU");
-        cpuButton.setBounds(0, 0, 100, 50);
-        cpuButton.addActionListener(this); // Attach ActionListener to the button
-        cpuButton.setFocusable(false);//removes the box that appears initially around the writing on the button
-        cpuButton.setBackground(new Color(64, 224, 208));
-        cpuButton.setFont(new Font("Comic Sans", Font.BOLD, 25));
-
         cpuText = new JTextArea();
         cpuText.setBounds(50, 100, 250, 250);
         cpuText.setEditable(false);
         cpuText.setFont(new Font("Comic Sans", Font.BOLD, 15));
         cpuText.setBackground(Color.white);
 
-        // Create JFrame (this frame itself since GUITest extends JFrame)
-        this.setTitle("Joint Assignment"); // Sets the title to Joint Assignment
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Allows the window to close properly
-        this.setResizable(false); // Makes the window non-resizable
+        cpuButton = new JButton("CPU");
+        cpuButton.setBounds(0, 0, 100, 50);
+        cpuButton.addActionListener(this); // Attach ActionListener to the button
+        cpuButton.setFocusable(false); // Removes the box that appears initially around the writing on the button
+        cpuButton.setBackground(new Color(64, 224, 208));
+        cpuButton.setFont(new Font("Comic Sans", Font.BOLD, 25));
+
+
+        // Set up the JFrame
+        this.setTitle("Joint Assignment"); // Set the title
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close on exit
+        this.setResizable(false);
         this.setSize(500, 500); // Set the frame size
         this.setVisible(true); // Make the frame visible
 
         // Set background color
         this.getContentPane().setBackground(Color.DARK_GRAY);
 
-        // Set layout manager to null for absolute positioning
         this.setLayout(null);
 
         // Add components to the frame
@@ -49,11 +48,15 @@ public class GUITest extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cpuButton) {
             try {
-                System.loadLibrary("sysInfo");
+                // Load native library (Make sure the sysInfo library is in your system path)
+                System.loadLibrary("sysInfo.so");
+
+                // Create and use cpuInfo and sysInfo objects
 
                 cpuInfo cpu = new cpuInfo();
                 cpu.read(0);
 
+                // Prepare the CPU info for display
                 StringBuilder info = new StringBuilder();
                 info.append("CPU Model: ").append(cpu.getModel()).append("\n");
                 info.append("Sockets: ").append(cpu.socketCount()).append("\n");
@@ -62,21 +65,22 @@ public class GUITest extends JFrame implements ActionListener {
                 info.append("L2 Cache: ").append(cpu.l2CacheSize()).append(" KB\n");
                 info.append("L3 Cache: ").append(cpu.l3CacheSize()).append(" KB\n");
 
+                // Additional CPU reading for core 1
                 cpu.read(1);
                 info.append("Core 1 Idle Time: ").append(cpu.getIdleTime(1)).append("%\n");
 
                 // Update the JTextArea with the CPU information
                 cpuText.setText(info.toString());
             } catch (Exception ex) {
+                // Correct the error handling and string formatting
                 cpuText.setText("Error retrieving CPU info: " + ex.getMessage());
             }
         }
     }
-        // Main method to launch the application
-        public static void main(String[]args){
-            // Create an instance of GUITest to run the program
-            new GUITest();
-        }
+
+    // Main method to launch the application
+    public static void main(String[] args) {
+        System.out.println("This is Fucked");
+        new GUITest();
+    }
 }
-
-
