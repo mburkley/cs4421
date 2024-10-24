@@ -89,7 +89,7 @@ void CPUInfo::_parseInfo (string& key, string &value)
         _littleEndian == (key == "Little Endian");
     else if (key == "Thread(s) per core")
         _threadsPerCore = _stoi (value, 1);
-    else if (key == "Core(s) per socket")
+    else if (key == "Core(s) per socket" || key == "Core(s) per cluster")
         _coresPerSocket = _stoi (value, 1);
     else if (key == "Socket(s)")
         _socketCount = _stoi (value, 1);
