@@ -2,13 +2,16 @@
  *  Disk information class for JNI
  *
  *  Copyright (c) 2024 Mark Burkley (mark.burkley@ul.ie)
- *
- *  TODO not currently implemented
  */
 
 public class diskInfo 
 {
-     public native int diskCount ();
-     public native String getModel ();
+    // Refresh the current values and counters - call this before other methods
+    public native void read ();
+    public native int diskCount ();
+    public native String getName (int disk);
+    public native long getTotal (int disk);
+    public native long getUsed (int disk);
+    public native long getAvailable (int disk);
 }
 

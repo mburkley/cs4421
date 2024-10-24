@@ -131,7 +131,7 @@ void CPUInfo::read(int seconds)
     if (seconds)
         sleep (seconds);
 
-    std::array<char, 1024> buffer;
+    std::array<char, 4096> buffer;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("lscpu -B", "r"), pclose);
 
     if (!pipe) {
