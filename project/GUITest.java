@@ -100,7 +100,7 @@ public class GUITest extends JFrame implements ActionListener {
 
     // Main method to launch the application
     public static void main(String[] args) {
-        System.out.println("h");
+        System.out.println("hi");
         new GUITest();
 
 
