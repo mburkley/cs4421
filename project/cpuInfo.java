@@ -4,7 +4,7 @@
  *  Copyright (c) 2024 Mark Burkley (mark.burkley@ul.ie)
  */
 
-public class cpuInfo 
+public class cpuInfo
 {
     // Refresh the current values and counters - call this before other methods
     public native void read (int seconds);
@@ -31,15 +31,15 @@ public class cpuInfo
     // Return the size in bytes of the L3 cache
     public native int l3CacheSize ();
 
-    // Return the time in "jiffies" or 1/100ths of a second 
+    // Return the time in "jiffies" or 1/100ths of a second
     // that the specified core has been in user mode
     public native int getUserTime (int core);
 
-    // Return the time in "jiffies" or 1/100ths of a second 
+    // Return the time in "jiffies" or 1/100ths of a second
     // that the specified core has been idle
     public native int getIdleTime (int core);
 
-    // Return the time in "jiffies" or 1/100ths of a second 
+    // Return the time in "jiffies" or 1/100ths of a second
     // that the specified core has been in system mode
     public native int getSystemTime (int core);
 }
