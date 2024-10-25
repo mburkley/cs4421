@@ -1,4 +1,4 @@
-MODULES=sysInfo cpuInfo pciInfo usbInfo
+MODULES=sysInfo cpuInfo pciInfo usbInfo diskInfo memInfo
 SOURCES=$(MODULES:=.cc)
 HEADERS=$(MODULES:%=../%.h)
 
@@ -7,7 +7,8 @@ HEADERS=$(MODULES:%=../%.h)
 OPENJDK=/usr/lib/jvm/java-11-openjdk-amd64/include
 
 libsysinfo.so: $(SOURCES) $(HEADERS)
-	gcc -fPIC -I .. -I $(OPENJDK) \
+	g++ -fPIC -I .. -I $(OPENJDK) \
         -I $(OPENJDK)/linux -shared \
+        -Wno-ignored-attributes \
         -o libsysinfo.so $(SOURCES)
 

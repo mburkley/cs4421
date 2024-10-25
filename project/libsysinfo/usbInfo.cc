@@ -47,25 +47,41 @@ private:
     int _busCount;
     USBBus _bus[maxBus];
     void _parseDevice (char buffer[]);
+    int _xtoi (string& s, int idefault);
 };
 
 USBInfo usb;
 
+int USBInfo::_xtoi (string& s, int idefault)
+{
+    int ival;
+
+    try {
+        ival = stoi (s, 0, 16);
+    }
+    catch(exception &err) {
+        ival = idefault;
+    }
+
+    return ival;
+}
+
 void USBInfo::_parseDevice (char buffer[])
 {
     string line = buffer;
-    
+    int ival;
+
     string part = "0x"+line.substr(4,3);
-    int bus = stoi (part,0,16);
+    int bus = _xtoi (part,0);
 
     part = "0x"+line.substr(15,3);
-    int device = stoi (part,0,16);
+    int device = _xtoi (part,0);
 
     part = "0x"+line.substr(23,4);
-    _bus[bus].device[device].vendor = stoi (part,0,16);
+    _bus[bus].device[device].vendor = _xtoi (part,0);
 
     part = "0x"+line.substr(28,4);
-    _bus[bus].device[device].product = stoi (part,0,16);
+    _bus[bus].device[device].product = _xtoi (part,0);
 
     // cout<<"bus="<<bus<<", dev="<<device<<endl;
     if (bus > _busCount)
@@ -78,7 +94,7 @@ void USBInfo::_parseDevice (char buffer[])
 
 void USBInfo::read()
 {
-    std::array<char, 1024> buffer;
+    std::array<char, 4096> buffer;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("lsusb", "r"), pclose);
 
     if (!pipe) {

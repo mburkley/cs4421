@@ -52,6 +52,7 @@ private:
     int _l1iCacheSize;
     int _l2CacheSize;
     int _l3CacheSize;
+    int _stoi (string& s, int idefault);
     void _parseInfo (string&, string &);
     void _parseStat (char buffer[]);
     void _parseStat (string&);
@@ -62,8 +63,24 @@ private:
 
 CPUInfo cpu;
 
+int CPUInfo::_stoi (string& s, int idefault)
+{
+    int ival;
+
+    try {
+        ival = stoi (s);
+    }
+    catch(exception &err) {
+        ival = idefault;
+    }
+
+    return ival;
+}
+
 void CPUInfo::_parseInfo (string& key, string &value)
 {
+    int ival;
+
     if (key == "Architecture")
         _architecture = value;
     else if (key == "Model name")
@@ -71,19 +88,19 @@ void CPUInfo::_parseInfo (string& key, string &value)
     else if (key == "Byte Order")
         _littleEndian == (key == "Little Endian");
     else if (key == "Thread(s) per core")
-        _threadsPerCore = stoi (value);
-    else if (key == "Core(s) per socket")
-        _coresPerSocket = stoi (value);
+        _threadsPerCore = _stoi (value, 1);
+    else if (key == "Core(s) per socket" || key == "Core(s) per cluster")
+        _coresPerSocket = _stoi (value, 1);
     else if (key == "Socket(s)")
-        _socketCount = stoi (value);
+        _socketCount = _stoi (value, 1);
     else if (key == "L1d cache")
-        _l1dCacheSize = stoi (value);
+        _l1dCacheSize = _stoi (value, 0);
     else if (key == "L1i cache")
-        _l1iCacheSize = stoi (value);
+        _l1iCacheSize = _stoi (value, 0);
     else if (key == "L2 cache")
-        _l2CacheSize = stoi (value);
+        _l2CacheSize = _stoi (value, 0);
     else if (key == "L3 cache")
-        _l3CacheSize = stoi (value);
+        _l3CacheSize = _stoi (value, 0);
 }
 
 void CPUInfo::_parseStat (char buffer[])
@@ -114,7 +131,7 @@ void CPUInfo::read(int seconds)
     if (seconds)
         sleep (seconds);
 
-    std::array<char, 1024> buffer;
+    std::array<char, 4096> buffer;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("lscpu -B", "r"), pclose);
 
     if (!pipe) {

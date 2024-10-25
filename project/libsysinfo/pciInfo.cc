@@ -101,7 +101,7 @@ void PCIInfo::_parseDevice (char buffer[])
 
 void PCIInfo::read()
 {
-    std::array<char, 1024> buffer;
+    std::array<char, 4096> buffer;
     std::unique_ptr<FILE, decltype(&fclose)> stat(fopen("/proc/bus/pci/devices", "r"), fclose);
 
     if (!stat) {
