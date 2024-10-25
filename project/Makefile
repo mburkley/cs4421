@@ -7,6 +7,8 @@ MYPROJECT=template
 
 all: $(HEADERS) $(MYPROJECT).class libsysinfo/libsysinfo.so
 
+# junk
+#
 $(MYPROJECT).class: $(MYPROJECT).java libsysinfo/libsysinfo.so
 	javac $<
 
